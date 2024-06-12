@@ -1,0 +1,48 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Humanitarian Assistance Drone Tracker</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Humanitarian Assistance Drone Tracker</h1>
+    <button id="start">Start Tracking</button>
+    <button id="stop">Stop Tracking</button>
+    <h2>Status</h2>
+    <div id="status"></div>
+
+    <script>
+        function updateStatus() {
+            $.getJSON("/status", function(data) {
+                var statusHtml = "<h3>Drones</h3><ul>";
+                data.drones.forEach(function(drone) {
+                    statusHtml += "<li>Drone " + drone.id + ": " + drone.location.toFixed(2) + "</li>";
+                });
+                statusHtml += "</ul><h3>Migrants</h3><ul>";
+                data.migrants.forEach(function(migrant) {
+                    statusHtml += "<li>Migrant " + migrant.id + ": " + migrant.location.toFixed(2) + "</li>";
+                });
+                statusHtml += "</ul>";
+                $("#status").html(statusHtml);
+            });
+        }
+
+        $(document).ready(function() {
+            $("#start").click(function() {
+                $.getJSON("/start", function(data) {
+                    console.log(data);
+                });
+            });
+
+            $("#stop").click(function() {
+                $.getJSON("/stop", function(data) {
+                    console.log(data);
+                });
+            });
+
+            setInterval(updateStatus, 2000);
+        });
+    </script>
+</body>
+</html>
